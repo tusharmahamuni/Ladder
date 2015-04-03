@@ -64,13 +64,13 @@ public class SnakesAndLaddersMain {
 
 	private Map<Integer, Integer> createLadders() {
 		final Map<Integer, Integer> ladderMap = new HashMap<Integer, Integer>();
-		ladderMap.put(4, 30); //34
-		ladderMap.put(9, 42); //51
-		ladderMap.put(20, 38);//58
-		ladderMap.put(28, 76);//104
-		ladderMap.put(40, 39);//79
-		ladderMap.put(51, 36);//87
-		ladderMap.put(71, 40);//111
+		ladderMap.put(4, 30);
+		ladderMap.put(9, 42);
+		ladderMap.put(20, 38);
+		ladderMap.put(28, 76);
+		ladderMap.put(40, 39);
+		ladderMap.put(51, 36);
+		ladderMap.put(71, 40);
 		return ladderMap;
 	}
 	public static void main(String[] args) {
