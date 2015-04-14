@@ -7,11 +7,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-
-import com.snl.application.SnakesAndLaddersMain;
 
 /**
  * Test class for {@link Game}
@@ -25,9 +21,9 @@ public class GameTest {
 	private final Player tom = new Player("TOM");
 	private final Player jerry = new Player("JERRY");
 	Player[] participants = {tom, jerry};
-	private IGame newGame;
+	//private Game newGame;
 	
-	@Before
+/*	@Before
 	public void init() throws Exception {
 		newGame = new SnakesAndLaddersMain(SQUARES_PER_ROW, TOTAL_ROWS, participants).getGame();
 	}
@@ -210,5 +206,76 @@ public class GameTest {
 		assertFalse(tom.wins());
 		assertFalse(tom.equals(newGame.winner()));
 		assertEquals(jerry, newGame.currentPlayer());
+	}
+	
+	//unit tests
+*/	@Test
+	public void createGameWithValidParameters() {
+		final Game game = new Game(SQUARES_PER_ROW, TOTAL_ROWS, participants);
+		assertFalse(game == null);
+		assertFalse(game.gameBoard() == null);
+		assertEquals(participants.length, game.getPlayers().size() );
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void tryToCreateGameWithSinglePlayer() throws Exception {
+		final Player[] players = {tom};
+		new Game(SQUARES_PER_ROW, TOTAL_ROWS, players);
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void tryToCreateGameWithInvalidValueForSquaresPerRow() throws Exception {
+		new Game(2, TOTAL_ROWS, participants);
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void tryToCreateGameWithInvalidValueForTotalRows() throws Exception {
+		new Game(SQUARES_PER_ROW, 0, participants);
+	}
+	
+	@Test
+	public void checkForCurrentPlayer() {
+		final Game game = new Game(SQUARES_PER_ROW, TOTAL_ROWS, participants);
+		assertFalse(game.currentPlayer()== null);
+		assertEquals(tom, game.currentPlayer());
+	}
+	
+	@Test
+	public void checkForIsOver() {
+		final Game game = new Game(SQUARES_PER_ROW, TOTAL_ROWS, participants);
+		assertFalse(game.isOver());
+	}
+	
+	@Test
+	public void checkForNotOver() {
+		final Game game = new Game(SQUARES_PER_ROW, TOTAL_ROWS, participants);
+		assertTrue(game.notOver());
+	}
+	
+	@Test
+	public void checkForIsOverWhenWinnerIsAvailable() {
+		final Game game = new Game(SQUARES_PER_ROW, TOTAL_ROWS, participants);
+		game.setWinner(participants[0]);
+		assertTrue(game.isOver());
+	}
+	
+	@Test
+	public void checkForNotOverWhenWinnerIsAvailable() {
+		final Game game = new Game(SQUARES_PER_ROW, TOTAL_ROWS, participants);
+		game.setWinner(participants[0]);
+		assertFalse(game.notOver());
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void checkForMovePlayerWithInvalidRollValue() throws Exception {
+		final Game game = new Game(SQUARES_PER_ROW, TOTAL_ROWS, participants);
+		game.movePlayer(7);
+	}
+	
+	@Test
+	public void checkForMovePlayerWithValidRollValue() {
+		final Game game = new Game(SQUARES_PER_ROW, TOTAL_ROWS, participants);
+		game.movePlayer(5);
+		assertEquals(6, tom.currentPosition());
 	}
 }

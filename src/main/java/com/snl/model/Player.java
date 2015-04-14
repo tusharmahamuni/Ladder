@@ -10,36 +10,54 @@ package com.snl.model;
 public class Player {
 
 	private String name;
-	private ISquare boardSquare;
+	private Square boardSquare;
 	
+	/**
+	 * @return the boardSquare
+	 */
+	public Square getBoardSquare() {
+		return boardSquare;
+	}
+
+	/**
+	 * @param boardSquare the boardSquare to set
+	 */
+	public void occupyBoardSquare(Square boardSquare) {
+		this.boardSquare = boardSquare;
+		this.boardSquare.enter(this);
+	}
+
 	public Player(String playerName) {
 		this.name = playerName;
+		validate();
 	}
 	
 	public int currentPosition() {
-		assert isPlayerValid();
-		return boardSquare.position();
-	}
+			return boardSquare.position();
+		}
 	
-	private boolean isPlayerValid() {
-		return ((name != null && !name.equals(" ")) && boardSquare != null);
+	private void validate() {
+		if((name == null) || (name.equals(" "))) {
+			throw new IllegalArgumentException("name should not be empty or null");
+		}
 	}
 	
 	public void moveForward(int moves) {
-		assert moves > 0;
-		boardSquare.leave(this);
-		boardSquare = boardSquare.moveToOccupy(moves);
-		boardSquare.enter(this);
+		if(validMoves(moves)) {
+			boardSquare.leave(this);
+			boardSquare = boardSquare.getToOccupy(moves);
+			boardSquare.enter(this);
+		}else {
+			throw new IllegalArgumentException("Invalid moves=" + moves);
+		}
+	}
+	
+	private boolean validMoves(final int moves) {
+		return (moves >= 1) && (moves <= Dice.MAX_FACES_VALUE);
 	}
 	
 	public boolean wins() {
 		return boardSquare.isLastSquare();
-	}
-	
-	public void joinGame(final Game game) {
-		this.boardSquare = game.gameBoard().firstBoardSquare();
-		boardSquare.enter(this);
-		assert isPlayerValid();
 	}
 	
 	/* (non-Javadoc)

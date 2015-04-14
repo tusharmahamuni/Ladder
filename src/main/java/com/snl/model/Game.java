@@ -10,7 +10,7 @@ import java.util.Queue;
  * @author Tushar.Mahamuni
  *
  */
-public class Game implements IGame {
+public class Game {
 
 	private Board board;
 	private Queue<Player> players;
@@ -19,15 +19,28 @@ public class Game implements IGame {
 	public Game(int squaresPerRow, int totalRows, Player[] participants) {
 		this.board = new Board(squaresPerRow, totalRows);
 		this.addPlayers(participants);
-		assert isGameValid();
+		validate();
+	}
+
+	/**
+	 * @param winner the winner to set
+	 */
+	public void setWinner(Player winner) {
+		this.winner = winner;
 	}
 
 	public Board gameBoard() {
 		return this.board;
 	}
 	
-	private boolean isGameValid() {
-		return ((board != null) && (players.size() > 1));
+	private void validate() {
+		if(!(players.size() > 1)) {
+			throw new IllegalArgumentException("No of players should be atleast 2");
+		}
+		
+		if(board == null) {
+			throw new IllegalArgumentException("board should not be null");
+		}
 	}
 	
 	/**
@@ -37,23 +50,22 @@ public class Game implements IGame {
 		return players;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.snl.model.IGame#movePlayer(int)
-	 */
-	@Override
 	public void movePlayer(final int roll) {
-		assert roll >=Dice.MIN_FACE_VALUE  && roll <= Dice.MAX_FACES_VALUE;
-		Player currentPlayer = null;
-		if(isBonusRoll(roll)) {
-			currentPlayer = players.peek();
+		if(isRollValid(roll)){
+			Player currentPlayer = null;
+			if(isBonusRoll(roll)) {
+				currentPlayer = players.peek();
+			}else {
+				currentPlayer = players.poll();
+				players.add(currentPlayer);
+			}
+			
+			currentPlayer.moveForward(roll);
+			if(currentPlayer.wins()) {
+				winner = currentPlayer;
+			}
 		}else {
-			currentPlayer = players.poll();
-			players.add(currentPlayer);
-		}
-		
-		currentPlayer.moveForward(roll);
-		if(currentPlayer.wins()) {
-			winner = currentPlayer;
+			throw new IllegalArgumentException("Invalid roll value=" + roll);
 		}
 	}
 	
@@ -61,42 +73,26 @@ public class Game implements IGame {
 		return roll == Dice.MAX_FACES_VALUE;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.snl.model.IGame#notOver()
-	 */
-	@Override
+	private boolean isRollValid(final int roll) {
+		return (roll >=Dice.MIN_FACE_VALUE  && roll <= Dice.MAX_FACES_VALUE);
+	}
 	public boolean notOver() {
 		return this.winner == null;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.snl.model.IGame#isOver()
-	 */
-	@Override
 	public boolean isOver() {
 		return !this.notOver();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.snl.model.IGame#winner()
-	 */
-	@Override
 	public Player winner() {
 		return this.winner;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.snl.model.IGame#currentPlayer()
-	 */
-	@Override
 	public Player currentPlayer() {
 		return players.peek();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.snl.model.IGame#play()
-	 */
-	@Override
+	
 	public void play() {
 		final Dice dice = new Dice();
 		while(this.notOver()) {
@@ -117,8 +113,9 @@ public class Game implements IGame {
 
 	private void addPlayers(Player[] participants) {
 		players = new LinkedList<Player>();
+		final Square boardSquare = this.gameBoard().firstBoardSquare();
 		for (Player player : participants) {
-			player.joinGame(this);
+			player.occupyBoardSquare(boardSquare);
 			players.add(player);
 		}
 	}

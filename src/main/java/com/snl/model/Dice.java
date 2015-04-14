@@ -15,7 +15,11 @@ public class Dice {
 
 	public int roll() {
 		final int faceValue = (((int) (Math.random() * 10) % MAX_FACES_VALUE) + MIN_FACE_VALUE); 
-		assert MIN_FACE_VALUE <= faceValue && faceValue <= MAX_FACES_VALUE;
-		return faceValue;
+		if(MIN_FACE_VALUE <= faceValue && faceValue <= MAX_FACES_VALUE) {
+			return faceValue;
+		}else {
+			throw new IllegalArgumentException("Invalid faceValue value=" + faceValue);
+		}
+		
 	}
 }

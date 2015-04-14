@@ -1,61 +1,59 @@
 package com.snl.model;
 
-public abstract class AbstractSquare implements ISquare {
+public class Square {
 
 	protected int position;
 	protected Board board;
 	private Player player;
 	
-	public AbstractSquare(Board board, int position) {
+	public Square(Board board, int position) {
 		this.position = position;
 		this.board = board;
-		assert isSquareValid();
+		validate();
 	}
 
-	protected boolean isSquareValid() {
-		return board != null && board.isPositionValid(position);
+	protected void validate() {
+		if(board == null) {
+			throw new IllegalArgumentException("board should not be null");
+		}
 	}
 
-	@Override
 	public int position() {
 		return this.position;
 	}
 
-	@Override
-	public ISquare moveToOccupy(int moves) {
-		assert moves > 0;
-		final ISquare square = board.findBoardSquare(position, moves);
+	public Square getToOccupy(int moves) {
+		final Square square = board.findBoardSquare(position, moves);
 		return square.occupyOrBackToStart();
 	}
 	
-	@Override
-	public ISquare occupyOrBackToStart() {
+	public Square occupyOrBackToStart() {
 		return this.alreadyOccupied() ? this.board.firstBoardSquare() : this;
 	}
 
-	@Override
 	public boolean isFirstSquare() {
 		return false;
 	}
 
-	@Override
 	public boolean isLastSquare() {
 		return false;
 	}
 
-	@Override
 	public void enter(Player player) {
-		assert this.player == null;
+		if(player == null) {
+			throw new UnsupportedOperationException("Player should not be null");
+		}
 		this.player = player;
 	}
 
-	@Override
 	public void leave(Player player) {
-		assert this.player == player;
-		this.player = null;
+		if(this.player == player) {
+			this.player = null;
+		}else {
+			throw new UnsupportedOperationException("Player " + player + " is not occupying current square");
+		}
 	}
 
-	@Override
 	public boolean isOccupied() {
 		return this.player != null;
 	}
@@ -68,6 +66,10 @@ public abstract class AbstractSquare implements ISquare {
 		return this.isOccupied() ? ("<" + this.player + ">") : "";
 	}
 
+	protected String squareContent() {
+		return Integer.toString(position);
+	}
+	
 	public String toString() {
 		return "[" + this.squareContent() + this.player() + "]";
 	}

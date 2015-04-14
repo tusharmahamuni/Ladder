@@ -7,7 +7,7 @@ package com.snl.model;
  * @author Tushar.Mahamuni
  *
  */
-public class LastSquare extends AbstractSquare {
+public class LastSquare extends Square {
 
 	public LastSquare(Board board, int position) {
 		super(board, position);
@@ -19,7 +19,7 @@ public class LastSquare extends AbstractSquare {
 	}
 	
 	@Override
-	public String squareContent() {
+	protected String squareContent() {
 		return "FINISH";
 	}
 }

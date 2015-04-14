@@ -10,7 +10,7 @@ import java.util.List;
  * @author Tushar.Mahamuni
  *
  */
-public class FirstSquare extends AbstractSquare {
+public class FirstSquare extends Square {
 	private List<Player> players;
 
 	public FirstSquare(Board board, int position) {
@@ -27,14 +27,20 @@ public class FirstSquare extends AbstractSquare {
 
 	@Override
 	public void enter(Player player) {
-		assert !players.contains(player);
-		players.add(player);
+		if(!players.contains(player)) {
+			players.add(player);
+		}else {
+			throw new UnsupportedOperationException("Player " + player + " already exists!");
+		}
 	}
 	
 	@Override
 	public void leave(Player player) {
-		assert players.contains(player);
-		players.remove(player);
+		if(players.contains(player)) {
+			players.remove(player);
+		}else {
+			throw new UnsupportedOperationException("Player " + player + " already removed!");
+		}
 	}
 	
 	@Override
@@ -48,12 +54,12 @@ public class FirstSquare extends AbstractSquare {
 	}
 	
 	@Override
-	public ISquare occupyOrBackToStart() {
+	public Square occupyOrBackToStart() {
 		return this;
 	}
 	
 	@Override
-	public String squareContent() {
+	protected String squareContent() {
 		return "START";
 	}
 	

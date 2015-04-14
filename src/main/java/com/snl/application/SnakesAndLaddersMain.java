@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.snl.model.Game;
-import com.snl.model.IGame;
 import com.snl.model.Player;
 
 /**
@@ -17,12 +16,12 @@ import com.snl.model.Player;
  */
 public class SnakesAndLaddersMain {
 
-	private IGame game;
+	private Game game;
 	
 	/**
 	 * @return the game
 	 */
-	public IGame getGame() {
+	public Game getGame() {
 		return game;
 	}
 
@@ -37,17 +36,25 @@ public class SnakesAndLaddersMain {
 	}
 	
 	private void addSnakes(final Map<Integer, Integer> snakeMap) {
-		assert ((snakeMap != null) && (!snakeMap.isEmpty()));
-		for(Entry<Integer, Integer> entry: snakeMap.entrySet()) {
-			this.game.gameBoard().convertBoardSquareToSnake(entry.getKey(), entry.getValue());
+		if((snakeMap != null) && (!snakeMap.isEmpty())) {
+			for(Entry<Integer, Integer> entry: snakeMap.entrySet()) {
+				this.game.gameBoard().convertBoardSquareToSnake(entry.getKey(), entry.getValue());
+			}
+		}else {
+			throw new IllegalArgumentException("Snake map should not be empty or null");
 		}
+		
 	}
 
 	private void addLadders(final Map<Integer, Integer> ladderMap) {
-		assert ((ladderMap != null) && (!ladderMap.isEmpty()));
-		for(Entry<Integer, Integer> entry: ladderMap.entrySet()) {
-			this.game.gameBoard().convertBoardSquareToLadder(entry.getKey(), entry.getValue());
+		if((ladderMap != null) && (!ladderMap.isEmpty())){
+			for(Entry<Integer, Integer> entry: ladderMap.entrySet()) {
+				this.game.gameBoard().convertBoardSquareToLadder(entry.getKey(), entry.getValue());
+			}
+		}else {
+			throw new IllegalArgumentException("Ladder map should not be empty or null");
 		}
+		
 	}
 	
 	private Map<Integer, Integer> createSnakes() {
